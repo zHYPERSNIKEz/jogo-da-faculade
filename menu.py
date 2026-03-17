@@ -19,9 +19,11 @@ class Menu:
         text_rect = text_obj.get_rect(center=(WIDTH/2, y))
         self.screen.blit(text_obj, text_rect)
 
-    def show_start_screen(self):
+    def show_start_screen(self, highscore):
         self.screen.fill(DARK_GREY)
         self.draw_text("ENDLESS JUMPER", self.font_title, WHITE, HEIGHT / 4)
+        
+        self.draw_text(f"RECORDE ATUAL: {highscore}", self.font_small, GREEN, HEIGHT / 3)
         
         instructions = [
             "CONTROLES:",
@@ -39,10 +41,17 @@ class Menu:
         pygame.display.flip()
         return self.wait_for_key()
 
-    def show_go_screen(self, score):
+    def show_go_screen(self, score, highscore):
         self.screen.fill(RED)
         self.draw_text("GAME OVER", self.font_title, WHITE, HEIGHT / 4)
-        self.draw_text(f"Pontuação: {score}", self.font_small, WHITE, HEIGHT / 2)
+        
+        self.draw_text(f"Sua Pontuação: {score}", self.font_small, WHITE, HEIGHT / 2 - 20)
+        
+        if score > highscore:
+            self.draw_text("NOVO RECORDE!", self.font_small, GREEN, HEIGHT / 2 + 20)
+        else:
+            self.draw_text(f"Recorde: {highscore}", self.font_small, WHITE, HEIGHT / 2 + 20)
+            
         self.draw_text("Pressione ESPAÇO para jogar novamente", self.font_small, WHITE, HEIGHT * 3/4)
         
         pygame.display.flip()

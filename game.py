@@ -14,6 +14,16 @@ class Game:
         self.font = pygame.font.SysFont("arial", 22, bold=True)
         self.font_large = pygame.font.SysFont("arial", 36, bold=True) # Fonte para o "Aperte Espaço"
         self.load_audio()
+        self.load_data() # Puxa o recorde salvo ao iniciar o jogo
+
+    # Agora a função está alinhada corretamente (fora do __init__)
+    def load_data(self):
+        # Tenta abrir o arquivo. Se não existir (ex: na primeira vez ou se apagar), o recorde é 0.
+        try:
+            with open(HS_FILE, 'r') as f:
+                self.highscore = int(f.read())
+        except:
+            self.highscore = 0
         
     def load_audio(self):
         pygame.mixer.init()
@@ -49,7 +59,7 @@ class Game:
         self.player.pos.y = self.ground.rect.top
         self.player.vel.y = 0
 
-        # 2. Gera as plataformas baseadas no Y da última plataforma (Corrige o bug da distância)
+        # 2. Gera as plataformas baseadas no Y da última plataforma
         highest_y = self.ground.rect.top
         for i in range(8):
             # A próxima plataforma fica entre 70 e 110 pixels acima da anterior
@@ -100,8 +110,7 @@ class Game:
                     if hit.rect.bottom > lowest_hit.rect.bottom:
                         lowest_hit = hit
                         
-                # CORREÇÃO: Mudamos de 'centery' para 'bottom' para garantir a colisão
-                # mesmo se o personagem cair muito rápido ou acertar a quina.
+                # Garante a colisão mesmo se o personagem cair muito rápido ou acertar a quina.
                 if self.player.pos.y <= lowest_hit.rect.bottom:
                     self.player.pos.y = lowest_hit.rect.top
                     self.player.vel.y = 0
@@ -136,6 +145,12 @@ class Game:
             self.playing = False
             self.play_sound('gameover.wav')
             pygame.mixer.music.stop()
+            
+            # --- PARTE QUE FALTAVA: SALVAR O RECORDE NO ARQUIVO ---
+            if self.score > self.highscore:
+                self.highscore = self.score
+                with open(HS_FILE, 'w') as f:
+                    f.write(str(self.score))
 
     def events(self):
         for event in pygame.event.get():

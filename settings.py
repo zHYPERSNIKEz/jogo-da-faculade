@@ -22,3 +22,6 @@ DARK_GREY = (40, 40, 40)
 # Configurações de Plataforma
 PLATFORM_WIDTH = 80
 PLATFORM_HEIGHT = 15
+
+# Arquivo de High Score
+HS_FILE = "highscore.txt"

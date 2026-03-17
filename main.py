@@ -7,20 +7,20 @@ def main():
     game = Game()
     menu = Menu(game.screen)
 
-    # Tela Inicial
-    if not menu.show_start_screen():
+    # Passa o recorde salvo para a tela inicial
+    if not menu.show_start_screen(game.highscore):
         pygame.quit()
         return
 
-    # Loop Principal da Aplicação
     while game.running:
         game.new()
         
-        # Após perder, se o jogo ainda estiver rodando (não foi fechado),
-        # exibe a tela de Game Over. Se o usuário quiser sair, para o loop.
         if game.running:
-            if not menu.show_go_screen(game.score):
+            # Passa a pontuação da partida E o recorde antigo para a tela de Game Over
+            if not menu.show_go_screen(game.score, game.highscore):
                 game.running = False
+            # Atualiza a variável de recorde caso o jogador tenha batido na partida anterior
+            game.load_data()
 
     pygame.quit()
 
